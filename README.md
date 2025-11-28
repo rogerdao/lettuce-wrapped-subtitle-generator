@@ -62,24 +62,24 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
 
    runs `medium.en` by default for English subtitles (--model medium.en)
    ```bash
-   python -m code.cli "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+   python cli.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
    ```
 
    non-English videos to English: be sure to specify using the `large` model. 
    ```bash
-   python -m code.cli "https://youtu.be/MwP4gqRys4c" --model large --translate --language ja
+   python cli.py "https://youtu.be/MwP4gqRys4c" --model large --translate --language ja
    ```
 
    example using a local video:
    ```bash
-   python -m code.cli --video-path downloads/sample.mp4 --language en
+   python cli.py --video-path downloads/sample.mp4 --language en
    ```
    
 3. Play the video back using any video player of your choice and the generated SRT file.
 
 ## CLI Usage
 
-`python -m code.cli URL [options]`
+`python cli.py URL [options]`
 
 Key options:
 
