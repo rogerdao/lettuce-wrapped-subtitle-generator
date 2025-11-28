@@ -67,12 +67,20 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Optional ISO language code hint for Whisper transcription.",
     )
     parser.add_argument(
+        "--translate",
+        action="store_true",
+        help="Force Whisper translate task (outputs English subtitles).",
+    )
+    parser.add_argument(
         "--ytdlp-option",
         action="append",
         metavar="KEY=VALUE",
         help="Extra yt-dlp option overrides (can be repeated). Example: --ytdlp-option format=bestvideo",
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    _ensure(hasattr(args, "url"), "Parsed args must have 'url' attribute.")
+    _ensure(hasattr(args, "video_path"), "Parsed args must have 'video_path' attribute.")
+    return args
 
 
 def parse_ytdlp_overrides(pairs: list[str] | None) -> dict:
@@ -80,37 +88,33 @@ def parse_ytdlp_overrides(pairs: list[str] | None) -> dict:
         return {}
     _ensure(len(pairs) <= MAX_YTDLP_OPTIONS, "Too many yt-dlp overrides provided.")
     overrides: dict = {}
-    for idx in range(MAX_YTDLP_OPTIONS):
-        if idx >= len(pairs):
-            break
-        pair = pairs[idx]
+    for pair in pairs:
         if "=" not in pair:
             raise ValueError(f"Invalid yt-dlp option '{pair}'. Use KEY=VALUE format.")
         key, value = pair.split("=", 1)
-        overrides[key.strip()] = value.strip()
-    _ensure(len(overrides) == len(pairs), "Duplicate yt-dlp override keys detected.")
+        key = key.strip()
+        _ensure(key not in overrides, f"Duplicate yt-dlp override key: {key}")
+        overrides[key] = value.strip()
     return overrides
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
-    _ensure(isinstance(args, argparse.Namespace), "Argument parsing failed.")
 
-    if not args.video_path and not args.url:
-        raise SystemExit("Either a URL or --video-path must be provided.")
+    _ensure(args.video_path is not None or args.url is not None, "Either a URL or --video-path must be provided.")
 
     video_path: Path
     if args.video_path:
         video_path = args.video_path
-        if not video_path.exists():
-            raise SystemExit(f"Provided video file does not exist: {video_path}")
+        _ensure(video_path.exists(), f"Provided video file does not exist: {video_path}")
     else:
         overrides = parse_ytdlp_overrides(args.ytdlp_option)
+        _ensure(args.url is not None, "URL must be provided when not using --video-path.")
         video_path = download_video(
             args.url,
             output_dir=args.output_dir,
             filename=args.filename,
-            ytdlp_options=overrides or None,
+            ytdlp_options=overrides if overrides else None,
         )
         print(f"Downloaded video to: {video_path}")
 
@@ -121,11 +125,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     print(f"Converted audio to MP3: {mp3_path}")
 
+    _ensure(not (args.translate and args.model.endswith(".en")), "Translation requires a multilingual Whisper model (omit the .en suffix).")
+
     srt_path = transcribe_mp3_to_srt(
         audio_path=mp3_path,
         output_path=args.srt_output,
         model_name=args.model,
         language=args.language,
+        translate=args.translate,
     )
     print(f"Created subtitles: {srt_path}")
 

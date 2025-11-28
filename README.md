@@ -14,7 +14,7 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
   ```bash
   pip install yt-dlp openai-whisper
   ```
-- w11, wsl ubuntu cuda drivers, for your convienence.
+- w11, wsl ubuntu cuda drivers, for your convenience.
   ```bash
   windows 11:
   https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
@@ -65,9 +65,9 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
    python -m code.cli "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
    ```
 
-   non-English videos: be sure to specify using the `large` model. 
+   non-English videos to English: be sure to specify using the `large` model. 
    ```bash
-   python -m code.cli "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --model large
+   python -m code.cli "https://youtu.be/MwP4gqRys4c" --model large --translate --language ja
    ```
 
    example using a local video:
@@ -79,7 +79,7 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
 
 ## CLI Usage
 
-`python code.cli URL [options]`
+`python -m code.cli URL [options]`
 
 Key options:
 
@@ -94,6 +94,7 @@ Key options:
 - `--bitrate 192k` audio bitrate for ffmpeg
 
 - `--model medium.en` Whisper model (`medium`, `large`, `turbo` etc.)
+- `--translate` force Whisper translate task (English subtitles; requires multilingual model)
 - `--language en` optional language hint
 
 ## Modules
