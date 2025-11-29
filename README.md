@@ -1,7 +1,14 @@
 # Media Subtitle Prototype - Thanksgiving project
 
 Prototype utility for downloading online videos, extracting MP3 audio, and generating SRT subtitles using OpenAI Whisper.
+
 The project is a learning prototype; hardening (e.g., retries, resumable downloads) is out of scope.
+
+Runs using CUDA by default.
+Uses audio to generate subtitles.
+
+Supports transcription and generation of subtitles for both English and non-English videos.
+Supports downloaded videos, and URL of videos.
 
 ## Requirements
 
@@ -14,7 +21,7 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
   ```bash
   pip install yt-dlp openai-whisper
   ```
-- w11, wsl ubuntu cuda drivers, for your convenience.
+- w11, wsl ubuntu CUDA drivers, for your convenience.
   ```bash
   windows 11:
   https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
@@ -22,24 +29,20 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
   wsl ubuntu:
   https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local
   
-  test:
+  verify:
   nvcc --version
   ```
-
 - CUDA compute capability:
   ```bash
   https://en.wikipedia.org/wiki/CUDA#GPUs_supported
   ```
-
 - CUDA toolkit
   ```bash
   https://developer.nvidia.com/cuda-toolkit-archive
   ```
-- cuDNN
+- cuDNN, w11: bin folder on PATH if not using installer
   ```bash
   https://developer.nvidia.com/cudnn
-  
-  on w11: add the cuDNN bin folder path to the path variable in environment variables if you're not using an installer.
   ```
 - get pytorch version corresponding to CUDA
   ```bash
@@ -58,14 +61,16 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
 2. Run the CLI to download a video and generate subtitles:
 
 - Whisper model selection impacts accuracy and runtime; larger models are slower but generally more accurate.
-- For non-English subtitling: accuracy is unacceptable when not using the large model.
+- For non-English subtitling: accuracy is unacceptable when not using the `large` model
+- Be sure to specifiy translation if desired, hint is optional.
 
-   runs `medium.en` by default for English subtitles (--model medium.en)
+   runs `medium.en` by default
    ```bash
    python cli.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
    ```
 
-   non-English videos to English: be sure to specify using the `large` model. 
+   non-English videos to English: be sure to specify using the `large` model, as well as translate flag.
+   language hint is optional.
    ```bash
    python cli.py "https://youtu.be/MwP4gqRys4c" --model large --translate --language ja
    ```
@@ -83,15 +88,14 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
 
 Key options:
 
-- `--video-path PATH` choose an existing video instead of downloading
-- `--mp3-output PATH` explicit MP3 target
-- `--srt-output PATH` explicit SRT target
-
+- `--video-path PATH` select an existing video as input instead of downloading
+- `--bitrate 192k` audio bitrate for ffmpeg
+- `--ytdlp-option KEY=VALUE` pass additional yt-dlp overrides (repeatable)
+  
 - `--output-dir DIR` download destination (`downloads` by default)
 - `--filename NAME` custom base name for download artifacts
-
-- `--ytdlp-option KEY=VALUE` pass additional yt-dlp overrides (repeatable)
-- `--bitrate 192k` audio bitrate for ffmpeg
+- `--mp3-output PATH` explicit MP3 target
+- `--srt-output PATH` explicit SRT target 
 
 - `--model medium.en` Whisper model (`medium`, `large`, `turbo` etc.)
 - `--translate` force Whisper translate task (English subtitles; requires multilingual model)
@@ -126,7 +130,7 @@ If we use the `large` model, 	~24min
 The subtitle time would roughly double. (200 + 45 + 1200s subtitle)
 
 If we use the `turbo` model, 	~7min
-Subtitle step would take quarter time. (200 + 45 + 150s subtitle)
+Subtitling step would take quarter time. (200 + 45 + 150s subtitle)
 ```
 
 
