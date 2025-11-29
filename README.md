@@ -133,4 +133,10 @@ If we use the `turbo` model, 	~7min
 Subtitling step would take quarter time. (200 + 45 + 150s subtitle)
 ```
 
+- Anime episode: download speed and processing speed scale similarly,
+```bash
+just double the subtitling step (to large)
+```
+  
+
 
