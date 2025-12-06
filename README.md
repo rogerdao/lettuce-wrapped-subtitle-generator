@@ -1,7 +1,6 @@
 # Media Subtitle Prototype - Thanksgiving weekend project
 
 Presented on 12/5 at AI Club @ SDSU
-presentation slide deck:
 https://docs.google.com/presentation/d/1jImkubl8rhaT4OiMCtalAMdsbXoVy3KNKOZpCp_N6_8/edit?slide=id.g3ae2df02bb3_0_0#slide=id.g3ae2df02bb3_0_0
 
 Prototype utility for downloading online videos, extracting MP3 audio, and generating SRT subtitles using OpenAI Whisper.
