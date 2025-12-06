@@ -66,9 +66,9 @@ The program is an end-to-end system,
 
 ## Quick Start
 
-1. Clone the repository and install dependencies.
+1. install dependencies.
 2. Run the CLI to download a video and generate subtitles:
-   example commands provided below.
+   (example commands provided below.)
 
 - Whisper model selection impacts accuracy and runtime; larger models are slower but generally more accurate.
 - For non-English subtitling: accuracy is unacceptable when not using the `large` model
@@ -137,7 +137,7 @@ Total: (200s + 45s + 400s) = ~10.75min
 
 We used `medium.en` as a relative time benchmark
 For non-English, we MUST use `large` otherwise accuracy is unusable
-For English, turbo has similar demands as medium.en, but accuracy closer to large (better) 
+For English, turbo has similar demands as medium.en, but accuracy closer to large (better than medium.en, not tested) 
 
 If we use the `large` model, 	~17.50min (done in under 40% of runtime)
 The subtitle time would roughly double. (200 + 45 + 800s subtitle)
