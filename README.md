@@ -1,4 +1,8 @@
-# Media Subtitle Prototype - Thanksgiving project
+# Media Subtitle Prototype - Thanksgiving weekend project
+
+Presented on 12/5 at AI Club @ SDSU
+presentation slide deck:
+https://docs.google.com/presentation/d/1jImkubl8rhaT4OiMCtalAMdsbXoVy3KNKOZpCp_N6_8/edit?slide=id.g3ae2df02bb3_0_0#slide=id.g3ae2df02bb3_0_0
 
 Prototype utility for downloading online videos, extracting MP3 audio, and generating SRT subtitles using OpenAI Whisper.
 
@@ -7,8 +11,10 @@ The project is a learning prototype; hardening (e.g., retries, resumable downloa
 Runs using CUDA by default.
 Uses audio to generate subtitles.
 
-Supports transcription and generation of subtitles for both English and non-English videos.
-Supports downloaded videos, and URL of videos.
+The program is an end-to-end system, 
+- Supports transcription and generation of subtitles for both English and non-English videos.
+- Supports downloaded videos, and URL of videos.
+- Can be used for adjacent applications, such as downloading a video, keeping in mind YouTube's compressed audio bitrate, and specifying a audio bitrate suitable to preserve file storage on a local .mp3 playback device
 
 ## Requirements
 
@@ -16,6 +22,9 @@ Supports downloaded videos, and URL of videos.
 - `ffmpeg` installed and on PATH
   ```bash
   sudo apt install ffmpeg
+  
+  w11 on powershell with winget: (or use an installer)
+  winget install Gyan.FFmpeg
   ```
 - Python dependencies:
   ```bash
@@ -36,19 +45,20 @@ Supports downloaded videos, and URL of videos.
   ```bash
   https://en.wikipedia.org/wiki/CUDA#GPUs_supported
   ```
-- CUDA toolkit
+- get CUDA toolkit corresponding to CUDA
   ```bash
   https://developer.nvidia.com/cuda-toolkit-archive
   ```
-- cuDNN, w11: bin folder on PATH if not using installer
+- get cuDNN corresponding to CUDA
   ```bash
   https://developer.nvidia.com/cudnn
+  for w11: bin folder on PATH if not using installer
   ```
 - get pytorch version corresponding to CUDA
   ```bash
   https://pytorch.org/get-started/locally/
 
-  verify in python:
+  verify the above, in python:
   import torch
   print(torch.__version__)
   print(torch.cuda.is_available())
@@ -59,12 +69,13 @@ Supports downloaded videos, and URL of videos.
 
 1. Clone the repository and install dependencies.
 2. Run the CLI to download a video and generate subtitles:
+   example commands provided below.
 
 - Whisper model selection impacts accuracy and runtime; larger models are slower but generally more accurate.
 - For non-English subtitling: accuracy is unacceptable when not using the `large` model
 - Be sure to specifiy translation if desired, hint is optional.
 
-   runs `medium.en` by default
+   runs `medium.en` (I think) by default (use `--model turbo` for faster speeds for English transcription)
    ```bash
    python cli.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
    ```
@@ -76,6 +87,7 @@ Supports downloaded videos, and URL of videos.
    ```
 
    example using a local video:
+   the program will warn you when you are not using `large` model for translation.
    ```bash
    python cli.py --video-path downloads/sample.mp4 --language en
    ```
@@ -89,17 +101,18 @@ Supports downloaded videos, and URL of videos.
 Key options:
 
 - `--video-path PATH` select an existing video as input instead of downloading
-- `--bitrate 192k` audio bitrate for ffmpeg
-- `--ytdlp-option KEY=VALUE` pass additional yt-dlp overrides (repeatable)
-  
-- `--output-dir DIR` download destination (`downloads` by default)
-- `--filename NAME` custom base name for download artifacts
-- `--mp3-output PATH` explicit MP3 target
-- `--srt-output PATH` explicit SRT target 
+- `--srt-output PATH` explicit SRT target (good to use with above if local video is not in downloads folder)
+- `--filename NAME` custom base name for download artifacts (renames the downloaded video, audio file, subtitle file)
 
 - `--model medium.en` Whisper model (`medium`, `large`, `turbo` etc.)
 - `--translate` force Whisper translate task (English subtitles; requires multilingual model)
 - `--language en` optional language hint
+  
+- `--mp3-output PATH` explicit MP3 target (to transcibe local mp3 audio -> for whisper to transcribe)
+- `--bitrate 192k` audio bitrate for ffmpeg (if you want to specify the bitrate, i.e keep the MP3 from a video for your own use)
+- `--output-dir DIR` download destination (`downloads` by default)
+
+- `--ytdlp-option KEY=VALUE` pass additional yt-dlp overrides (repeatable)
 
 ## Modules
 
@@ -108,7 +121,7 @@ Key options:
 
 ## Notes
 
-- Trial run:
+- Trial run: (correct times this time)
 
 ```bash
 for a 46 minute video
@@ -118,24 +131,25 @@ for a 46 minute video
 ~45 seconds to split a 46 minute video
 .webm -> .mp3 + .mp4
 
-~600 seconds (5:39) For subtitle generation step
+~400s seconds (6:39) For subtitle generation step
 .mp3 -> .srt
 
-Total: (200s + 45s + 600s) = ~14min
+Total: (200s + 45s + 400s) = ~10.75min
 
 We used `medium.en` as a relative time benchmark
-For non-english, we MUST use `large` otherwise accuracy is unusable
+For non-English, we MUST use `large` otherwise accuracy is unusable
+For English, turbo has similar demands as medium.en, but accuracy closer to large (better) 
 
-If we use the `large` model, 	~24min
-The subtitle time would roughly double. (200 + 45 + 1200s subtitle)
+If we use the `large` model, 	~17.50min (done in under 40% of runtime)
+The subtitle time would roughly double. (200 + 45 + 800s subtitle)
 
-If we use the `turbo` model, 	~7min
-Subtitling step would take quarter time. (200 + 45 + 150s subtitle)
+If we use the `turbo` model, 	~5.75min (done in under 15% of runtime)
+Subtitle step would take quarter time. (200 + 45 + 100s subtitle)
 ```
 
-- Anime episode: download speed and processing speed scale similarly,
+- Anime episode: large model only,
 ```bash
-just double the subtitling step (to large)
+just look at times for large and nothing else
 ```
   
 
