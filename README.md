@@ -1,19 +1,18 @@
 # Media Subtitle Prototype - Thanksgiving weekend project
 
-Presented on 12/5 at AI Club @ SDSU
-https://docs.google.com/presentation/d/1jImkubl8rhaT4OiMCtalAMdsbXoVy3KNKOZpCp_N6_8/edit?slide=id.g3ae2df02bb3_0_0#slide=id.g3ae2df02bb3_0_0
+Presented on 12/5 at AI Club @ SDSU [Slides]([https://github.com/user/repo](https://docs.google.com/presentation/d/1jImkubl8rhaT4OiMCtalAMdsbXoVy3KNKOZpCp_N6_8/edit?slide=id.g3ae2df02bb3_0_0#slide=id.g3ae2df02bb3_0_0))
 
 Prototype utility for downloading online videos, extracting MP3 audio, and generating SRT subtitles using OpenAI Whisper.
 
 The project is a learning prototype; hardening (e.g., retries, resumable downloads) is out of scope.
 
-Runs using CUDA by default.
+Runs using CUDA by default.  
 Uses audio to generate subtitles.
 
 The program is an end-to-end system, 
+- Supports downloading videos via URL, and local videos/audio
 - Supports transcription and generation of subtitles for both English and non-English videos.
-- Supports downloaded videos, and URL of videos.
-- Can be used for adjacent applications, such as downloading a video, keeping in mind YouTube's compressed audio bitrate, and specifying a audio bitrate suitable to preserve file storage on a local .mp3 playback device
+- Can be used for adjacent applications due to yt-dlp, ffmpeg (e.g. specify desired bitrate for mp3 downloads)
 
 ## Requirements
 
@@ -117,7 +116,7 @@ Key options:
 - `code/media_utils.py` – helper functions to download video, convert to MP3, and transcribe to SRT.
 - `code/cli.py` – command-line wrapper orchestrating the full pipeline.
 
-## Notes
+## Notes for time benchmarks
 
 - Trial run: (correct times this time)
 
