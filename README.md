@@ -29,7 +29,7 @@ The program is an end-to-end system,
   ```bash
   pip install yt-dlp openai-whisper
   ```
-- w11, wsl ubuntu CUDA drivers, for your convenience.
+- w11, wsl ubuntu CUDA drivers
   ```bash
   windows 11:
   https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11&target_type=exe_local
@@ -67,12 +67,12 @@ The program is an end-to-end system,
 ## Quick Start
 
 1. install dependencies.
-2. Run the CLI to download a video and generate subtitles:
-   (example commands provided below.)
+2. Run the CLI to download a video and generate subtitles (examples below)
+3. Play the video back using any video player of your choice and the generated SRT file.
 
 - Whisper model selection impacts accuracy and runtime; larger models are slower but generally more accurate.
-- For non-English subtitling: accuracy is unacceptable when not using the `large` model
-- Be sure to specifiy translation if desired, hint is optional.
+- Diminishing returns on English transcription as you go up. `Medium` and `Large`/`Turbo` are fine.
+- For translation: accuracy is **unacceptable** when not using the `large` model  
 
    runs `medium.en` (I think) by default (use `--model turbo` for faster speeds for English transcription)
    ```bash
@@ -80,20 +80,19 @@ The program is an end-to-end system,
    ```
 
    non-English videos to English: be sure to specify using the `large` model, as well as translate flag.
+   the program will warn when not using `large` model for translation.   
    language hint is optional.
    ```bash
    python cli.py "https://youtu.be/MwP4gqRys4c" --model large --translate --language ja
    ```
 
    example using a local video:
-   the program will warn you when you are not using `large` model for translation.
    ```bash
    python cli.py --video-path downloads/sample.mp4 --language en
    ```
-   
-3. Play the video back using any video player of your choice and the generated SRT file.
 
-## CLI Usage
+
+## CLI Usage and Options
 
 `python cli.py URL [options]`
 
@@ -125,9 +124,9 @@ Key options:
 ```bash
 for a 46 minute video
 
-~200s for download 1500mb @ 7.5MBps (cox fiber and Wi-Fi)
+~200s to download 1500mb @ 7.5MBps (cox fiber, Wi-Fi)
 
-~45 seconds to split a 46 minute video
+~45 seconds to process/split audio, remux/transcode video from 46 minute video
 .webm -> .mp3 + .mp4
 
 ~400s seconds (6:39) For subtitle generation step
@@ -148,7 +147,7 @@ Subtitle step would take quarter time. (200 + 45 + 100s subtitle)
 
 - Anime episode: large model only,
 ```bash
-just look at times for large and nothing else
+refer to times for large and nothing else
 ```
   
 
